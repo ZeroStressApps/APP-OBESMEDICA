@@ -193,42 +193,19 @@ function exportarDatos() {
     type: "application/json"
   });
 
-  const archivo = new File(
-    [blob],
-    "registroPeso_backup.json",
-    { type: "application/json" }
-  );
-
-  // Intentar compartir el archivo en móvil
-  if (
-    navigator.share &&
-    navigator.canShare &&
-    navigator.canShare({ files: [archivo] })
-  ) {
-    navigator.share({
-      title: "Backup de mi peso",
-      text: "Copia de seguridad de mis registros de peso",
-      files: [archivo]
-    }).catch(() => {
-      // Si compartir falla, usamos la alternativa
-      abrirBackupComoArchivo(blob);
-    });
-
-    return;
-  }
-
-  // Si no se puede compartir
-  abrirBackupComoArchivo(blob);
-}
-
-function abrirBackupComoArchivo(blob) {
   const url = URL.createObjectURL(blob);
 
-  window.open(url, "_blank");
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = "registroPeso_backup.json";
+
+  document.body.appendChild(enlace);
+  enlace.click();
+  document.body.removeChild(enlace);
 
   setTimeout(() => {
     URL.revokeObjectURL(url);
-  }, 10000);
+  }, 1000);
 }
 
     function importarDatos(event) {
