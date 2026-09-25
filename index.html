@@ -199,7 +199,7 @@ function exportarDatos() {
     { type: "application/json" }
   );
 
-  // Intentar compartir el archivo desde el móvil
+  // Intentar compartir el archivo en móvil
   if (
     navigator.share &&
     navigator.canShare &&
@@ -209,13 +209,21 @@ function exportarDatos() {
       title: "Backup de mi peso",
       text: "Copia de seguridad de mis registros de peso",
       files: [archivo]
-    }).catch(() => {});
-    
+    }).catch(() => {
+      // Si compartir falla, usamos la alternativa
+      abrirBackupComoArchivo(blob);
+    });
+
     return;
   }
 
-  // Si no se puede compartir, abrir el JSON en una nueva pestaña
+  // Si no se puede compartir
+  abrirBackupComoArchivo(blob);
+}
+
+function abrirBackupComoArchivo(blob) {
   const url = URL.createObjectURL(blob);
+
   window.open(url, "_blank");
 
   setTimeout(() => {
